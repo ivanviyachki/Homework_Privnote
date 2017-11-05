@@ -41,8 +41,6 @@ class PostsController < ApplicationController
       @post = Post.new(post_params)
       if @post.save
           redirect_to posts_url + "/" + @post.id.to_s 
-        format.html { render "link", locals: {url: "homeworkprivnote.herokuapp.com/posts/" + @post.id.to_s } }
-        format.json { render :show, status: :created, location: @post }
       else
           render 'index'
       end
