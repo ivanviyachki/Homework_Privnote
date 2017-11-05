@@ -40,12 +40,9 @@ class PostsController < ApplicationController
     elsif request.content_type =~ /form/
       @post = Post.new(post_params)
       if @post.save
-<<<<<<< HEAD
           redirect_to posts_url + "/" + @post.id.to_s 
-=======
         format.html { render "link", locals: {url: "homeworkprivnote.herokuapp.com/posts/" + @post.id.to_s } }
         format.json { render :show, status: :created, location: @post }
->>>>>>> 7e1755c3e41b6c42079cc70783c82e7aa1702d6f
       else
           render 'index'
       end
