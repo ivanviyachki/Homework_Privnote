@@ -24,18 +24,27 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.json
   def create
-    @post = Post.new(post_params)
-
-    respond_to do |format|
+    if request.content_type =~ /xml/
+      params[:message] = Hash.from_xml(request.body.read)["message"]
+      post = Post.create(body: params[:message])
+      render xml: 
+      '<?xml version = "1.0" encoding = "UTF-8" standalone ="yes"?>' +
+      '<url>' + 
+          posts_url + "/" + post.id.to_s
+      '</url>';    
+    elsif request.content_type =~ /json/
+      post = Post.create(body: params[:message])
+      render json: {url: posts_url + "/" + post.id.to_s}
+    elsif request.content_type =~ /form/
+      @post = Post.new(post_params)
       if @post.save
-        format.html { render "link", locals: {url: "localhost:3000/posts/" + @post.id.to_s } }
-        format.json { render :show, status: :created, location: @post }
+          redirect_to posts_url + "/" + @post.id.to_s 
       else
-        format.html { render :new }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
+          render 'index'
       end
     end
   end
+
   # PATCH/PUT /posts/1
   # PATCH/PUT /posts/1.json
   def update
@@ -49,7 +58,7 @@ class PostsController < ApplicationController
       end
     end
   end
-
+  
   # DELETE /posts/1
   # DELETE /posts/1.json
   def destroy
